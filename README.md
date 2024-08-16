@@ -1,5 +1,7 @@
 # back-integra2
 
+modulos npm install bcryptjs cors dotenv express jsonwebtoken mysql2 nodemon
+
 ```plaintext
 back-integra2/
 ├── src/

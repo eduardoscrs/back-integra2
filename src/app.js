@@ -10,13 +10,14 @@ app.use(cors());
 app.use(express.json());
 
 // Prueba de conexión a la base de datos
-pool.getConnection()
-    .then((connection) => {
-        console.log('Conexión a la base de datos exitosa');
-        connection.release(); // Liberar la conexión
-    })
-    .catch((err) => {
-        console.error('Error al conectar a la base de datos:', err.message);
-    });
+pool
+  .getConnection()
+  .then((connection) => {
+    console.log('Conexión a la base de datos exitosa');
+    connection.release(); // Liberar la conexión
+  })
+  .catch((err) => {
+    console.error('Error al conectar a la base de datos:', err.message);
+  });
 
 export default app;

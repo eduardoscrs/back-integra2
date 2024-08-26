@@ -10,5 +10,8 @@ export const pool = createPool({
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT),
   database: process.env.DB_DATABASE,
-  connectTimeout: parseInt(process.env.DB_CONNECT_TIMEOUT),
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
 });

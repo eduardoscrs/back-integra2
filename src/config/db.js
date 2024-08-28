@@ -1,7 +1,7 @@
 import { query } from 'express';
 import admin from 'firebase-admin';
 import { QuerySnapshot } from 'firebase-admin/firestore';
-import serviceAccount from '../../serviceAccountKeys.js' ; // Asegúrate de que la ruta sea correcta
+import serviceAccount from '../../serviceAccountKeys.js'; // Asegúrate de que la ruta sea correcta
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

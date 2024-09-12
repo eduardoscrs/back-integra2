@@ -1,44 +1,24 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const db = require('../config/database');
 
-const Caso = sequelize.define('Caso', {
-  ID_caso: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  tipo_siniestro: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  descripcion_siniestro: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  ID_Cliente: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Usuario',
-      key: 'ID_usuario',
-    },
-  },
-  ID_inspector: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Usuario',
-      key: 'ID_usuario',
-    },
-  },
-  ID_contratista: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Usuario',
-      key: 'ID_usuario',
-    },
-  },
-});
+class Caso {
+  static async crear(casoData) {
+    const [result] = await db.query(
+      'INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista) VALUES (?, ?, ?, ?, ?)',
+      [
+        casoData.tipo_siniestro,
+        casoData.descripcion_siniestro,
+        casoData.ID_Cliente,
+        casoData.ID_inspector,
+        casoData.ID_contratista,
+      ]
+    );
+    return result.insertId;
+  }
+
+  static async obtenerPorId(id) {
+    const [rows] = await db.query('SELECT * FROM Caso WHERE ID_caso = ?', [id]);
+    return rows[0];
+  }
+}
 
 module.exports = Caso;

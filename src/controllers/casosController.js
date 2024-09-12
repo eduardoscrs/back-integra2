@@ -1,4 +1,4 @@
-const casoService = require('../services/casoService');
+const Caso = require('../models/casoModel');
 
 exports.crearCaso = async (req, res) => {
   try {
@@ -10,13 +10,15 @@ exports.crearCaso = async (req, res) => {
       ID_contratista,
     } = req.body;
 
-    const nuevoCaso = await casoService.crearCaso({
+    const nuevoCasoId = await Caso.crear({
       tipo_siniestro,
       descripcion_siniestro,
       ID_Cliente,
       ID_inspector,
       ID_contratista,
     });
+
+    const nuevoCaso = await Caso.obtenerPorId(nuevoCasoId);
 
     res.status(201).json({
       success: true,

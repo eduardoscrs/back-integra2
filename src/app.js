@@ -1,22 +1,24 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const compression = require('compression');
-const { errorHandler } = require('./middlewares/errorMiddleware');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { pool } from './config/db.js'; 
+dotenv.config();
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-// Middlewares globales
 
-// Rutas
-const userRoutes = require('./routes/userRoutes');
-const casoRoutes = require('./routes/casoRoutes');
 
-app.use('/api/users', userRoutes);
-app.use('/api/casos', casoRoutes);
+//Prueba de conexión a la base de datos
+pool
+  .getConnection()
+  .then((connection) => {
+    console.log('Conexión a la base de datos exitosa');
+    connection.release(); // Liberar la conexión
+  })
+  .catch((err) => {
+    console.error('Error al conectar a la base de datos:', err.message);
+  });
 
-// Manejo de errores
-app.use(errorHandler);
-
-module.exports = app;
+export default app;

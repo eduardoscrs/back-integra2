@@ -1,8 +1,6 @@
-const db = require('../config/db');
-const pool = db.pool;
-const excel = require('exceljs');
+import { pool } from '../config/db.js';
 
-exports.createCaso = async (req, res) => {
+export const createCaso = async (req, res) => {
   const {
     tipo_siniestro,
     descripcion_siniestro,
@@ -14,10 +12,9 @@ exports.createCaso = async (req, res) => {
 
   try {
     // Se agrega el caso a la tabla Caso
-    const [result] = await db.query(
-      `
-          INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista)
-          VALUES (?, ?, ?, ?, ?)`,
+    const [result] = await pool.query(
+      `INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista)
+       VALUES (?, ?, ?, ?, ?)`,
       [
         tipo_siniestro,
         descripcion_siniestro,
@@ -30,12 +27,11 @@ exports.createCaso = async (req, res) => {
     // ID del caso insertado
     const casoID = result.insertId;
 
-    // agregar a la tabla Sector
+    // Agregar a la tabla Sector
     for (const sector of sectores) {
-      await db.query(
-        `
-              INSERT INTO Sector (nombre_sector, dano_sector, porcentaje_perdida, total_costo, ID_caso)
-              VALUES (?, ?, ?, ?, ?)`,
+      await pool.query(
+        `INSERT INTO Sector (nombre_sector, dano_sector, porcentaje_perdida, total_costo, ID_caso)
+         VALUES (?, ?, ?, ?, ?)`,
         [
           sector.nombre_sector,
           sector.dano_sector,
@@ -52,11 +48,9 @@ exports.createCaso = async (req, res) => {
   }
 };
 
-// Función para obtener los casos, deberia servir para crear el excel xd
-exports.getCasos = async (req, res) => {
+export const getCasos = async (req, res) => {
   try {
-    const [casos] = await db.query(`
-          SELECT * FROM Caso`);
+    const [casos] = await pool.query(`SELECT * FROM Caso`);
 
     res.status(200).json(casos);
   } catch (error) {

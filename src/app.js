@@ -2,10 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { pool } from './config/db.js';
+import casoRouter from './routes/casoRoutes.js';
 dotenv.config();
 
-const casoRouter = require('./routes/casoRoutes');
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 // apis

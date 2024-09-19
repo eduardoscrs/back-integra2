@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { createCaso, getCasos } from '../controllers/casoController.js';
+
 const router = express.Router();
-const casosController = require('../controllers/casoController');
 
 router.post('/', createCaso);
+router.get('/', getCasos);
 
-module.exports = router;
+export default router;

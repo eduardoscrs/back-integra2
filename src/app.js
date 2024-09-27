@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { pool } from './config/db.js';
 import casoRouter from './routes/casoRoutes.js';
+import userroute from './routes/userroute.js';
+
 dotenv.config();
 
 const app = express();
@@ -11,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 // apis
 app.use('/api/casos', casoRouter);
+app.use('/api/users', userroute);
 
 //Prueba de conexión a la base de datos
 pool

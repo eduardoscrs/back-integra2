@@ -3,7 +3,7 @@ import { pool } from '../config/db.js';
 export const getUsers = async (req, res) => {
   try {
     const conn = await pool.getConnection();
-    const users = await conn.query('SELECT * FROM USUARIOS');
+    const users = await conn.query('SELECT * FROM Usuario');
     res.json(users[0]);
   } catch (error) {
     console.log('algo salio mal');
@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
     const { nombre, usuario, correo, idrol } = req.body;
     const newUser = { nombre, usuario, correo, idrol };
     const conn = await pool.getConnection();
-    conn.query('INSERT INTO USUARIOS SET ?', [newUser]);
+    conn.query('INSERT INTO Usuario SET ?', [newUser]);
     res.json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -29,7 +29,7 @@ export const editUser = async (req, res) => {
     const id = req.params.id;
     const conn = await pool.getConnection();
     conn.query(
-      'UPDATE USUARIOS SET nombre = ?, usuario = ?,\
+      'UPDATE Usuario SET nombre = ?, usuario = ?,\
             correo = ?, idrol = ? WHERE id = ?',
       [nombre, usuario, correo, idrol, id]
     );
@@ -43,7 +43,7 @@ export const deleteUser = async (req, res) => {
   try {
     const id = req.params.id;
     const conn = await pool.getConnection();
-    conn.query('DELETE FROM USUARIOS WHERE id = ?', [id]);
+    conn.query('DELETE FROM Usuario WHERE id = ?', [id]);
     res.json({ message: 'Usuario eliminado' });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -1,12 +1,7 @@
-import express from 'express';
-import casoRoutes from './routes/casoRoutes.js'; // Asegúrate de que la ruta es correcta
-import app from './app.js';
+import app from './app.js'; // Importa la aplicación de Express
 
-app.use(express.json()); // Middleware para parsear JSON
+const port = process.env.PORT || 3000; // Establece el puerto
 
-app.use('/casos', casoRoutes); // Asegúrate de que '/casos' es el prefijo correcto
-
-const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`); // Mensaje de inicio del servidor
 });

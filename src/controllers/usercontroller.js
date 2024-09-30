@@ -1,51 +1,147 @@
 import { pool } from '../config/db.js';
 
+export const createUser = async (req, res) => {
+  const {
+    nombre,
+    apellido,
+    celular,
+    correo,
+    contrasena,
+    direccion,
+    comuna,
+    ID_rol,
+  } = req.body;
+
+  if (
+    !nombre ||
+    !apellido ||
+    !celular ||
+    !correo ||
+    !contrasena ||
+    !direccion ||
+    !comuna ||
+    !ID_rol
+  ) {
+    return res.status(400).json({
+      message: 'Faltan datos necesarios para crear el usuario.',
+    });
+  }
+
+  try {
+    const [result] = await pool.query(
+      `INSERT INTO Usuario (nombre, apellido, celular, correo, contrasena, direccion, comuna, ID_rol)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [nombre, apellido, celular, correo, contrasena, direccion, comuna, ID_rol]
+    );
+
+    const UsuarioID = result.insertId;
+
+    res.status(201).json({ message: 'Usuario creado.', UsuarioID });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const getUsers = async (req, res) => {
   try {
-    const conn = await pool.getConnection();
-    const users = await conn.query('SELECT * FROM Usuario');
-    res.json(users[0]);
+    const [usuarios] = await pool.query('SELECT * FROM Usuario');
+
+    res.status(200).json(usuarios);
   } catch (error) {
-    console.log('algo salio mal');
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-export const registerUser = async (req, res) => {
-  try {
-    const { nombre, usuario, correo, idrol } = req.body;
-    const newUser = { nombre, usuario, correo, idrol };
-    const conn = await pool.getConnection();
-    conn.query('INSERT INTO Usuario SET ?', [newUser]);
-    res.json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+export const getUserByID = async (req, res) => {
+  const { id } = req.params;
 
-export const editUser = async (req, res) => {
   try {
-    const { nombre, usuario, correo, idrol } = req.body;
-    const id = req.params.id;
-    const conn = await pool.getConnection();
-    conn.query(
-      'UPDATE Usuario SET nombre = ?, usuario = ?,\
-            correo = ?, idrol = ? WHERE id = ?',
-      [nombre, usuario, correo, idrol, id]
+    const [usuario] = await pool.query(
+      'SELECT * FROM Usuario WHERE ID_usuario = ?',
+      [id]
     );
-    res.json({ nombre, usuario, correo, idrol });
+
+    if (usuario.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    res.status(200).json(usuario[0]);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const {
+    nombre,
+    apellido,
+    celular,
+    correo,
+    contrasena,
+    direccion,
+    comuna,
+    ID_rol,
+  } = req.body;
+
+  if (
+    !nombre ||
+    !apellido ||
+    !celular ||
+    !correo ||
+    !contrasena ||
+    !direccion ||
+    !comuna ||
+    !ID_rol
+  ) {
+    return res.status(400).json({
+      message: 'Faltan datos necesarios para actualizar el usuario.',
+    });
+  }
+
+  try {
+    const [result] = await pool.query(
+      `UPDATE Usuario
+       SET nombre = ?, apellido = ?, celular = ?, correo = ?, contrasena = ?, direccion = ?, comuna = ?, ID_rol = ?
+       WHERE ID_usuario = ?`,
+      [
+        nombre,
+        apellido,
+        celular,
+        correo,
+        contrasena,
+        direccion,
+        comuna,
+        ID_rol,
+        id,
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    res.status(200).json({ message: 'Usuario actualizado.' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const id = req.params.id;
-    const conn = await pool.getConnection();
-    conn.query('DELETE FROM Usuario WHERE id = ?', [id]);
-    res.json({ message: 'Usuario eliminado' });
+    const [result] = await pool.query(
+      'DELETE FROM Usuario WHERE ID_usuario = ?',
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    res.status(200).json({ message: 'Usuario eliminado.' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };

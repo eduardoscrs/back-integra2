@@ -1,17 +1,16 @@
 import express from 'express';
 import {
-  registerUser,
+  createUser,
   getUsers,
-  editUser,
-  registerRol,
-  getRol,
+  updateUser,
+
 } from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.get('/users', getUsers);
-router.put('/edit/:id', editUser);
+router.post('/', createUser);
+router.get('/', getUsers);
+router.put('/:id', updateUser);
 // Actualizar por rol
-router.post('/registerRol', registerRol);
-router.get('/rol', getRol);
+
+export default router;

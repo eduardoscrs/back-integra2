@@ -4,9 +4,18 @@ export const createMaterial = async (req, res) => {
   const { nombre_material, cantidad, precio, medida } = req.body;
 
   // Validación de los datos necesarios
-  if (!nombre_material || !cantidad || !precio || !medida) {
+  let missingFields = [];
+
+  if (!nombre_material) missingFields.push('nombre_material');
+  if (!cantidad) missingFields.push('cantidad');
+  if (!precio) missingFields.push('precio');
+  if (!medida) missingFields.push('medida');
+
+  if (missingFields.length > 0) {
     return res.status(400).json({
-      message: 'Faltan datos necesarios para crear el material.',
+      message: `Faltan los siguientes datos necesarios para crear el material: ${missingFields.join(
+        ', '
+      )}.`,
     });
   }
 

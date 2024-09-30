@@ -7,8 +7,6 @@ import userRoutes from './routes/userRoutes.js';
 import materialRoutes from './routes/materialRoutes.js';
 import rolRoutes from './routes/rolRoutes.js';
 
-
-
 dotenv.config();
 
 const app = express();

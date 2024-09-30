@@ -13,5 +13,6 @@ router.get('/', getCasos);
 // Actualizar un caso específico
 router.put('/:id', updateCaso);
 router.delete('/:id', deleteCaso);
+router.get('/:id', getCasos);
 
 export default router;

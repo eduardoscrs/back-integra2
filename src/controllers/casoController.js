@@ -16,6 +16,7 @@ export const createCaso = async (req, res) => {
     !ID_Cliente ||
     !ID_inspector ||
     !ID_contratista ||
+    !ID_estado ||
     !sectores
   ) {
     return res
@@ -26,14 +27,15 @@ export const createCaso = async (req, res) => {
   try {
     // Se agrega el caso a la tabla Caso
     const [result] = await pool.query(
-      `INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista)
-       VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista, ID_estado)
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
         tipo_siniestro,
         descripcion_siniestro,
         ID_Cliente,
         ID_inspector,
         ID_contratista,
+        ID_estado,
       ]
     );
 
@@ -62,9 +64,13 @@ export const createCaso = async (req, res) => {
   }
 };
 
+// Obtener todos los casos con sus sectores
 export const getCasos = async (req, res) => {
   try {
-    const [casos] = await pool.query(`SELECT * FROM Caso`);
+    const [casos] = await pool.query(`
+      SELECT Caso.*, Estado_Caso.nombre_estado 
+      FROM Caso 
+      JOIN Estado_Caso ON Caso.ID_estado = Estado_Caso.ID_estado`);
 
     // Para cada caso, recuperamos sus sectores
     const casosConSectores = await Promise.all(
@@ -84,6 +90,7 @@ export const getCasos = async (req, res) => {
   }
 };
 
+//actualizar caso
 export const updateCaso = async (req, res) => {
   const casoID = req.params.id; // Obtén el ID del caso desde la ruta
   const {
@@ -92,18 +99,20 @@ export const updateCaso = async (req, res) => {
     ID_Cliente,
     ID_inspector,
     ID_contratista,
+    ID_estado,
   } = req.body;
 
   try {
     // Actualizar el caso
     await pool.query(
-      `UPDATE Caso SET tipo_siniestro = ?, descripcion_siniestro = ?, ID_Cliente = ?, ID_inspector = ?, ID_contratista = ? WHERE ID_caso = ?`,
+      `UPDATE Caso SET tipo_siniestro = ?, descripcion_siniestro = ?, ID_Cliente = ?, ID_inspector = ?, ID_contratista = ?, ID_estado = ? WHERE ID_caso = ?`,
       [
         tipo_siniestro,
         descripcion_siniestro,
         ID_Cliente,
         ID_inspector,
         ID_contratista,
+        ID_estado,
         casoID,
       ]
     );

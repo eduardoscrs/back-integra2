@@ -7,6 +7,7 @@ export const createCaso = async (req, res) => {
     ID_Cliente,
     ID_inspector,
     ID_contratista,
+    ID_estado,
     sectores,
   } = req.body;
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   createMaterial,
-  getMaterials,
+  getMaterial,
   updateMaterial,
   deleteMaterial,
 } from '../controllers/materialController.js';
@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post('/', createMaterial);
-router.get('/', getMaterials);
+router.get('/', getMaterial);
 // Actualizar un material específico
 router.put('/:id', updateMaterial);
 router.delete('/:id', deleteMaterial);

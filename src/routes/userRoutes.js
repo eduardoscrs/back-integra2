@@ -3,7 +3,6 @@ import {
   createUser,
   getUsers,
   updateUser,
-
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -11,6 +10,5 @@ const router = express.Router();
 router.post('/', createUser);
 router.get('/', getUsers);
 router.put('/:id', updateUser);
-// Actualizar por rol
 
 export default router;

@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import bcrypt from 'bcrypt';
 
 export const createUser = async (req, res) => {
   const {
@@ -12,6 +13,7 @@ export const createUser = async (req, res) => {
     ID_rol,
   } = req.body;
 
+  // Verificación de campos obligatorios
   if (
     !nombre ||
     !apellido ||
@@ -28,10 +30,23 @@ export const createUser = async (req, res) => {
   }
 
   try {
+    // Cifrar la contraseña
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
     const [result] = await pool.query(
       `INSERT INTO Usuario (nombre, apellido, celular, correo, contrasena, direccion, comuna, ID_rol)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [nombre, apellido, celular, correo, contrasena, direccion, comuna, ID_rol]
+      [
+        nombre,
+        apellido,
+        celular,
+        correo,
+        hashedPassword,
+        direccion,
+        comuna,
+        ID_rol,
+      ] // Usa hashedPassword aquí
     );
 
     const UsuarioID = result.insertId;
@@ -89,7 +104,6 @@ export const updateUser = async (req, res) => {
     !apellido ||
     !celular ||
     !correo ||
-    !contrasena ||
     !direccion ||
     !comuna ||
     !ID_rol
@@ -100,6 +114,13 @@ export const updateUser = async (req, res) => {
   }
 
   try {
+    // Si se proporciona una nueva contraseña, cifrarla
+    let hashedPassword = contrasena;
+    if (contrasena) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+    }
+
     const [result] = await pool.query(
       `UPDATE Usuario
        SET nombre = ?, apellido = ?, celular = ?, correo = ?, contrasena = ?, direccion = ?, comuna = ?, ID_rol = ?
@@ -109,7 +130,7 @@ export const updateUser = async (req, res) => {
         apellido,
         celular,
         correo,
-        contrasena,
+        hashedPassword, // Usa la contraseña cifrada
         direccion,
         comuna,
         ID_rol,

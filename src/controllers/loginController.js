@@ -5,10 +5,14 @@ import jwt from 'jsonwebtoken';
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log('Email ingresado:', email); // Registro del email ingresado
+
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [
+    const [rows] = await pool.query('SELECT * FROM Usuario WHERE correo = ?', [
       email,
     ]);
+
+    console.log('Resultado de la consulta:', rows); // Registro del resultado de la consulta
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -16,13 +20,15 @@ export const loginUser = async (req, res) => {
 
     const user = rows[0];
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Contraseña del usuario:', user.contrasena); // Registro de la contraseña almacenada
+
+    const isMatch = await bcrypt.compare(password, user.contrasena); // Asegúrate de usar 'user.contrasena'
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.ID_usuario }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
@@ -32,6 +38,3 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
-
-
-//app.use('/api/users', userRoutes);

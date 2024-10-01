@@ -32,3 +32,6 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
+
+
+//app.use('/api/users', userRoutes);

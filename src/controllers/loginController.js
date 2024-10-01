@@ -6,7 +6,9 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [
+      email,
+    ]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -20,7 +22,9 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
     res.json({ token });
   } catch (err) {

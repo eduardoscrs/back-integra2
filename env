@@ -1,0 +1,9 @@
+PORT=3000
+JWT_SECRET="Dx4VdeUPJs"
+DB_HOST=bylanpdxjlmrw2ixoud8-mysql.services.clever-cloud.com
+DB_USER=uofv0bbpla2jv4cg
+DB_PASSWORD=07HPhVIUsXAPvN57hqnb
+DB_PORT=3306
+DB_DATABASE=bylanpdxjlmrw2ixoud8
+DB_CONNECT_TIMEOUT=20000000
+

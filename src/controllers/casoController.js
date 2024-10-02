@@ -155,23 +155,3 @@ export const getCasoById = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener el caso' });
   }
 };
-
-// Actualizar el estado del caso
-export const actualizarEstadoCaso = async (req, res) => {
-  const { id } = req.params;
-  const { estado } = req.body;
-
-  try {
-    const casoActualizado = await Caso.findByIdAndUpdate(
-      id,
-      { estado },
-      { new: true }
-    );
-    if (!casoActualizado) {
-      return res.status(404).json({ mensaje: 'Caso no encontrado' });
-    }
-    res.status(200).json(casoActualizado);
-  } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar el caso', error });
-  }
-};

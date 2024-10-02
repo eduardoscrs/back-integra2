@@ -4,6 +4,7 @@ import {
   getCasos,
   updateCaso,
   deleteCaso,
+  actualizarEstadoCaso,
 } from '../controllers/casoController.js';
 
 const router = express.Router();
@@ -14,5 +15,7 @@ router.get('/', getCasos);
 router.put('/:id', updateCaso);
 router.delete('/:id', deleteCaso);
 router.get('/:id', getCasos);
+// Actualizar estado del caso
+router.put('/:id', actualizarEstadoCaso);
 
 export default router;

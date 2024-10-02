@@ -157,7 +157,7 @@ export const getCasoById = async (req, res) => {
 };
 
 // Actualizar el estado del caso
-exports.actualizarEstadoCaso = async (req, res) => {
+export const actualizarEstadoCaso = async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 

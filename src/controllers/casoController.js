@@ -103,6 +103,19 @@ export const updateCaso = async (req, res) => {
     ID_estado,
   } = req.body;
 
+  // Verificar que los campos requeridos no sean null
+  if (
+    tipo_siniestro == null ||
+    descripcion_siniestro == null ||
+    ID_Cliente == null ||
+    ID_inspector == null ||
+    ID_contratista == null ||
+    ID_estado == null
+  ) {
+    return res.status(400).json({
+      message: 'Todos los campos son obligatorios y no deben ser null',
+    });
+  }
   try {
     // Actualizar el caso
     await pool.query(

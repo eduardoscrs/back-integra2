@@ -15,7 +15,7 @@ const router = express.Router();
  *   post:
  *     tags:
  *       - Casos
- *     summary: Crear un nuevo caso
+ *     summary: Crear un nuevo registro
  *     requestBody:
  *       required: true
  *       content:
@@ -23,45 +23,34 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               tipo_siniestro:
+ *               campo_1:
  *                 type: string
- *                 description: Tipo de siniestro
- *               descripcion_siniestro:
+ *               campo_2:
  *                 type: string
- *                 description: Descripción del siniestro
- *               ID_Cliente:
+ *               campo_3:
  *                 type: integer
- *                 description: ID del cliente
- *               ID_inspector:
+ *               campo_4:
  *                 type: integer
- *                 description: ID del inspector
- *               ID_contratista:
+ *               campo_5:
  *                 type: integer
- *                 description: ID del contratista
- *               ID_estado:
+ *               campo_6:
  *                 type: integer
- *                 description: ID del estado del caso
- *               sectores:
+ *               lista_objetos:
  *                 type: array
- *                 description: Lista de sectores asociados al caso
  *                 items:
  *                   type: object
  *                   properties:
- *                     nombre_sector:
+ *                     atributo_1:
  *                       type: string
- *                       description: Nombre del sector
- *                     dano_sector:
+ *                     atributo_2:
  *                       type: string
- *                       description: Descripción del daño en el sector
- *                     porcentaje_perdida:
+ *                     atributo_3:
  *                       type: number
- *                       description: Porcentaje de pérdida en el sector
- *                     total_costo:
+ *                     atributo_4:
  *                       type: number
- *                       description: Costo total del sector
  *     responses:
  *       201:
- *         description: Caso creado exitosamente
+ *         description: Registro creado exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -69,12 +58,11 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Caso creado exitosamente
- *                 casoID:
+ *                   example: Registro creado exitosamente
+ *                 id_registro:
  *                   type: integer
- *                   description: ID del caso creado
  *       400:
- *         description: Faltan datos necesarios para crear el caso
+ *         description: Error en los datos recibidos
  *         content:
  *           application/json:
  *             schema:
@@ -82,20 +70,9 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Faltan datos necesarios para crear el caso
+ *                   example: Error en los datos
  *       500:
- *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Error al crear el caso
- *                 error:
- *                   type: string
- *                   description: Detalles del error
+ *         description: Error interno del servidor
  */
 
 router.post('/', createCaso);
@@ -106,49 +83,44 @@ router.post('/', createCaso);
  *   get:
  *     tags:
  *       - Casos
- *     summary: Obtener todos los casos junto con sus sectores
+ *     summary: Obtener todos los recursos
  *     responses:
  *       200:
- *         description: Lista de casos con sus sectores
+ *         description: Lista de recursos obtenida exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 type: object
- *                 properties:
- *                   ID_caso:
- *                     type: integer
- *                     description: ID del caso
- *                   nombre_estado:
- *                     type: string
- *                     description: Estado del caso
- *                   sectores:
- *                     type: array
- *                     items:
- *                       type: object
- *                       properties:
- *                         ID_sector:
- *                           type: integer
- *                           description: ID del sector
- *                         nombre_sector:
- *                           type: string
- *                           description: Nombre del sector
  *       500:
- *         description: Error al obtener los casos
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Mensaje de error
- *                 error:
- *                   type: string
- *                   description: Detalles del error
+ *         description: Error en el servidor
  */
+
 router.get('/', getCasos);
+
+/**
+ * @openapi
+ * /api/v1/casos/{id}:
+ *   get:
+ *     tags:
+ *       - Casos
+ *     summary: Obtener un recurso específico
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Detalles del recurso obtenidos exitosamente
+ *       404:
+ *         description: Recurso no encontrado
+ *       500:
+ *         description: Error en el servidor
+ */
+router.get('/:id', getCasos);
 
 /**
  * @openapi
@@ -156,12 +128,11 @@ router.get('/', getCasos);
  *   put:
  *     tags:
  *       - Casos
- *     summary: Actualizar un caso específico
+ *     summary: Actualizar un recurso específico
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID del caso que se desea actualizar
  *         schema:
  *           type: integer
  *     requestBody:
@@ -171,58 +142,17 @@ router.get('/', getCasos);
  *           schema:
  *             type: object
  *             properties:
- *               tipo_siniestro:
+ *               atributo1:
  *                 type: string
- *                 description: Tipo de siniestro
- *               descripcion_siniestro:
+ *               atributo2:
  *                 type: string
- *                 description: Descripción del siniestro
- *               ID_Cliente:
- *                 type: integer
- *                 description: ID del cliente
- *               ID_inspector:
- *                 type: integer
- *                 description: ID del inspector
- *               ID_contratista:
- *                 type: integer
- *                 description: ID del contratista
- *               ID_estado:
- *                 type: integer
- *                 description: ID del estado del caso
  *     responses:
  *       200:
- *         description: Caso actualizado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Caso actualizado exitosamente
+ *         description: Recurso actualizado exitosamente
  *       400:
- *         description: Datos faltantes o inválidos
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Todos los campos son obligatorios y no deben ser null
+ *         description: Error en los datos proporcionados
  *       500:
  *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Error al actualizar el caso
- *                 error:
- *                   type: string
- *                   description: Detalles del error
  */
 
 router.put('/:id', updateCaso);
@@ -233,72 +163,23 @@ router.put('/:id', updateCaso);
  *   delete:
  *     tags:
  *       - Casos
- *     summary: Eliminar un caso específico
+ *     summary: Eliminar un recurso específico
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID del caso que se desea eliminar
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Caso eliminado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Caso eliminado exitosamente
+ *         description: Recurso eliminado exitosamente
  *       404:
- *         description: Caso no encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Caso no encontrado
+ *         description: Recurso no encontrado
+ *       500:
+ *         description: Error en el servidor
  */
 
 router.delete('/:id', deleteCaso);
-
-/**
- * @openapi
- * /api/v1/casos/{id}:
- *   get:
- *     tags:
- *       - Casos
- *     summary: Obtener un caso específico
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID del caso que se desea obtener
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Detalles del caso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *       404:
- *         description: Caso no encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Caso no encontrado
- */
-router.get('/:id', getCasos);
 
 /**
  * @openapi
@@ -306,12 +187,11 @@ router.get('/:id', getCasos);
  *   put:
  *     tags:
  *       - Casos
- *     summary: Actualizar el estado de un caso específico
+ *     summary: Actualizar el estado de un recurso específico
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID del caso cuyo estado se desea actualizar
  *         schema:
  *           type: integer
  *     requestBody:
@@ -321,40 +201,15 @@ router.get('/:id', getCasos);
  *           schema:
  *             type: object
  *             properties:
- *               ID_estado:
+ *               estado:
  *                 type: integer
- *                 description: Nuevo estado del caso
  *     responses:
  *       200:
- *         description: Estado del caso actualizado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Estado del caso actualizado exitosamente
- *       404:
- *         description: Caso no encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *                   example: Caso no encontrado
+ *         description: Estado actualizado exitosamente
  *       400:
- *         description: El estado es obligatorio
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *                   example: El estado es obligatorio
+ *         description: Error en los datos
+ *       500:
+ *         description: Error en el servidor
  */
 
 router.put('/:id/estado', actualizarEstadoCaso);

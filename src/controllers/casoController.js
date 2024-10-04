@@ -139,9 +139,15 @@ export const updateCaso = async (req, res) => {
 };
 
 export const deleteCaso = async (req, res) => {
-  const casoID = req.params.id; // Obtén el ID del caso desde la ruta
+  const casoID = req.params.id;
 
   try {
+    // Verificar si el caso existe
+    const [caso] = await pool.query('SELECT * FROM Caso WHERE ID_caso = ?', [casoID]);
+    if (caso.length === 0) {
+      return res.status(404).json({ message: 'Caso no encontrado' });
+    }
+
     // Eliminar los sectores asociados primero
     await pool.query(`DELETE FROM Sector WHERE ID_caso = ?`, [casoID]);
 
@@ -150,15 +156,16 @@ export const deleteCaso = async (req, res) => {
 
     res.status(200).json({ message: 'Caso eliminado exitosamente' });
   } catch (error) {
-    console.error(error); // Loguea el error para depuración
+    console.error(error);
     res.status(500).json({ message: 'Error al eliminar el caso', error });
   }
 };
 
+
 export const getCasoById = async (req, res) => {
   const { id } = req.params;
   try {
-    const [rows] = await pool.query('SELECT * FROM casos WHERE id = ?', [id]);
+    const [rows] = await pool.query('SELECT * FROM Caso WHERE ID_caso = ?', [id]);
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Caso no encontrado' });
     }
@@ -168,6 +175,7 @@ export const getCasoById = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener el caso' });
   }
 };
+
 
 // Actualizar el estado del caso
 export const actualizarEstadoCaso = async (req, res) => {

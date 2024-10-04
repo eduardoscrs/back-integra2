@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { pool } from './config/db.js';
+import { swaggerSpec, swaggerUi } from './v1/swagger.js';
 import casoRouter from './routes/casoRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import materialRoutes from './routes/materialRoutes.js';
@@ -13,6 +14,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+//documentación
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // apis
 app.use('/api/casos', casoRouter);
 app.use('/api/users', userRoutes);

@@ -47,7 +47,7 @@ export const getTrabajoByID = async (req, res) => {
       return res.status(404).json({ message: 'Trabajo no encontrado.' });
     }
 
-    res.status(200).json(trabajo);
+    res.status(200).json(trabajo[0]);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

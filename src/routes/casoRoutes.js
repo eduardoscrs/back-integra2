@@ -15,7 +15,7 @@ const router = express.Router();
  *   post:
  *     tags:
  *       - Casos
- *     summary: Crear un nuevo registro
+ *     summary: Crear un nuevo caso
  *     requestBody:
  *       required: true
  *       content:
@@ -50,7 +50,7 @@ const router = express.Router();
  *                       type: number
  *     responses:
  *       201:
- *         description: Registro creado exitosamente
+ *         description: caso creado exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -58,7 +58,7 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Registro creado exitosamente
+ *                   example: caso creado exitosamente
  *                 id_registro:
  *                   type: integer
  *       400:
@@ -83,10 +83,10 @@ router.post('/', createCaso);
  *   get:
  *     tags:
  *       - Casos
- *     summary: Obtener todos los recursos
+ *     summary: Obtener todos los casos
  *     responses:
  *       200:
- *         description: Lista de recursos obtenida exitosamente
+ *         description: Lista de casos obtenida exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -105,7 +105,7 @@ router.get('/', getCasos);
  *   get:
  *     tags:
  *       - Casos
- *     summary: Obtener un recurso específico
+ *     summary: Obtener un caso específico
  *     parameters:
  *       - name: id
  *         in: path
@@ -114,9 +114,9 @@ router.get('/', getCasos);
  *           type: integer
  *     responses:
  *       200:
- *         description: Detalles del recurso obtenidos exitosamente
+ *         description: Detalles del caso obtenidos exitosamente
  *       404:
- *         description: Recurso no encontrado
+ *         description: caso no encontrado
  *       500:
  *         description: Error en el servidor
  */
@@ -128,7 +128,7 @@ router.get('/:id', getCasos);
  *   put:
  *     tags:
  *       - Casos
- *     summary: Actualizar un recurso específico
+ *     summary: Actualizar un caso específico
  *     parameters:
  *       - name: id
  *         in: path
@@ -148,7 +148,7 @@ router.get('/:id', getCasos);
  *                 type: string
  *     responses:
  *       200:
- *         description: Recurso actualizado exitosamente
+ *         description: caso actualizado exitosamente
  *       400:
  *         description: Error en los datos proporcionados
  *       500:
@@ -163,7 +163,7 @@ router.put('/:id', updateCaso);
  *   delete:
  *     tags:
  *       - Casos
- *     summary: Eliminar un recurso específico
+ *     summary: Eliminar un caso específico
  *     parameters:
  *       - name: id
  *         in: path
@@ -172,9 +172,9 @@ router.put('/:id', updateCaso);
  *           type: integer
  *     responses:
  *       200:
- *         description: Recurso eliminado exitosamente
+ *         description: caso eliminado exitosamente
  *       404:
- *         description: Recurso no encontrado
+ *         description: caso no encontrado
  *       500:
  *         description: Error en el servidor
  */
@@ -187,7 +187,7 @@ router.delete('/:id', deleteCaso);
  *   put:
  *     tags:
  *       - Casos
- *     summary: Actualizar el estado de un recurso específico
+ *     summary: Actualizar el estado de un caso específico
  *     parameters:
  *       - name: id
  *         in: path

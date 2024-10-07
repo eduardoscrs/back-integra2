@@ -65,24 +65,24 @@ export const createCaso = async (req, res) => {
   }
 };
 
-// Obtener todos los casos con sus sectores
 export const getCasos = async (req, res) => {
   try {
     const [casos] = await pool.query(`
       SELECT Caso.*, Estado_Caso.nombre_estado 
       FROM Caso 
-      JOIN Estado_Caso ON Caso.ID_estado = Estado_Caso.ID_estado`);
+      JOIN Estado_Caso ON Caso.ID_estado = Estado_Caso.ID_estado
+    `);
 
-    // Para cada caso, recuperamos sus sectores
-    const casosConSectores = await Promise.all(
-      casos.map(async (caso) => {
-        const [sectores] = await pool.query(
-          `SELECT * FROM Sector WHERE ID_caso = ?`,
-          [caso.ID_caso]
-        );
-        return { ...caso, sectores }; // Combina el caso con sus sectores
-      })
-    );
+    // Utilizar un enfoque secuencial o con un límite de concurrencia
+    const casosConSectores = [];
+
+    for (const caso of casos) {
+      const [sectores] = await pool.query(
+        `SELECT * FROM Sector WHERE ID_caso = ?`,
+        [caso.ID_caso]
+      );
+      casosConSectores.push({ ...caso, sectores });
+    }
 
     res.status(200).json(casosConSectores);
   } catch (error) {
@@ -177,22 +177,23 @@ export const getCasoById = async (req, res) => {
 };
 
 
-// Actualizar el estado del caso
 export const actualizarEstadoCaso = async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 
   try {
-    const casoActualizado = await Caso.findByIdAndUpdate(
-      id,
-      { estado },
-      { new: true }
+    const [result] = await pool.query(
+      `UPDATE Caso SET ID_estado = ? WHERE ID_caso = ?`,
+      [estado, id]
     );
-    if (!casoActualizado) {
+
+    if (result.affectedRows === 0) {
       return res.status(404).json({ mensaje: 'Caso no encontrado' });
     }
-    res.status(200).json(casoActualizado);
+
+    res.status(200).json({ mensaje: 'Estado del caso actualizado exitosamente' });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar el caso', error });
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al actualizar el estado del caso', error });
   }
 };

@@ -181,12 +181,22 @@ export const getCasoById = async (req, res) => {
 
 export const actualizarEstadoCaso = async (req, res) => {
   const { id } = req.params;
-  const { estado } = req.body;
+  const { ID_estado } = req.body;
+
+  // Validar que ID_estado no sea nulo o undefined
+  if (ID_estado === null || ID_estado === undefined) {
+    return res.status(400).json({ mensaje: 'El campo ID_estado es requerido' });
+  }
+
+  // Validar que ID_estado sea un valor válido (en este caso, entre 1 y 4)
+  if (![1, 2, 3, 4].includes(ID_estado)) {
+    return res.status(400).json({ mensaje: 'ID de estado no válido' });
+  }
 
   try {
     const [result] = await pool.query(
       `UPDATE Caso SET ID_estado = ? WHERE ID_caso = ?`,
-      [estado, id]
+      [ID_estado, id]
     );
 
     if (result.affectedRows === 0) {

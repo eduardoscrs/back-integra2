@@ -4,6 +4,7 @@ import {
   getCasos,
   updateCaso,
   deleteCaso,
+  actualizarEstadoCaso,
 } from '../controllers/casoController.js';
 
 const router = express.Router();

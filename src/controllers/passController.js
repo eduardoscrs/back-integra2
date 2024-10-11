@@ -1,7 +1,7 @@
 import { pool } from '../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { validationResult } from 'express-validator'; // Asegúrate de instalar esta biblioteca
+import { validationResult } from 'express-validator';
 
 export const loginUser = async (req, res) => {
   // Validación de entradas
@@ -13,7 +13,9 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [rows] = await pool.query('SELECT * FROM Usuario WHERE correo = ?', [email]);
+    const [rows] = await pool.query('SELECT * FROM Usuario WHERE correo = ?', [
+      email,
+    ]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -26,7 +28,9 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    const token = jwt.sign({ id: user.ID_usuario }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.ID_usuario }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
     res.json({ token });
   } catch (err) {
     console.error('Error al iniciar sesión:', err.message);

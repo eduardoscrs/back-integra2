@@ -3,6 +3,8 @@ import {
   createUser,
   getUsers,
   updateUser,
+  getUserByID,
+  updateUserPassword,
 } from '../controllers/userController.js';
 import { loginUser } from '../controllers/loginController.js';
 
@@ -115,4 +117,7 @@ router.put('/:id', updateUser);
  */
 router.post('/login', loginUser);
 
+router.get('/:id', getUserByID);
+
+router.put('/:id/password', updateUserPassword);
 export default router;

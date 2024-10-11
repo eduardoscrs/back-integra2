@@ -11,6 +11,7 @@ export const createCaso = async (req, res) => {
     sectores,
   } = req.body;
 
+  // Validación de campos requeridos
   if (
     !tipo_siniestro ||
     !descripcion_siniestro ||
@@ -18,16 +19,21 @@ export const createCaso = async (req, res) => {
     !ID_inspector ||
     !ID_contratista ||
     !ID_estado ||
-    !sectores
+    !Array.isArray(sectores) || sectores.length === 0
   ) {
     return res
       .status(400)
       .json({ message: 'Faltan datos necesarios para crear el caso.' });
   }
 
+  const connection = await pool.getConnection();
+
   try {
-    // Se agrega el caso a la tabla Caso
-    const [result] = await pool.query(
+    // Iniciar la transacción
+    await connection.beginTransaction();
+
+    // Insertar en la tabla Caso
+    const [casoResult] = await connection.query(
       `INSERT INTO Caso (tipo_siniestro, descripcion_siniestro, ID_Cliente, ID_inspector, ID_contratista, ID_estado)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
@@ -40,28 +46,90 @@ export const createCaso = async (req, res) => {
       ]
     );
 
-    // ID del caso insertado
-    const casoID = result.insertId;
+    const casoID = casoResult.insertId;
 
-    // Agregar a la tabla Sector
+    // Insertar en la tabla Sector y SubSector
     for (const sector of sectores) {
-      await pool.query(
+      const {
+        nombre_sector,
+        dano_sector,
+        porcentaje_perdida,
+        total_costo,
+        subsectores, // Asegúrate de que cada sector pueda tener subsectores
+      } = sector;
+
+      // Validar campos del sector
+      if (
+        !nombre_sector ||
+        !dano_sector ||
+        porcentaje_perdida == null ||
+        total_costo == null
+      ) {
+        throw new Error('Faltan datos en alguno de los sectores.');
+      }
+
+      // Insertar sector
+      const [sectorResult] = await connection.query(
         `INSERT INTO Sector (nombre_sector, dano_sector, porcentaje_perdida, total_costo, ID_caso)
          VALUES (?, ?, ?, ?, ?)`,
         [
-          sector.nombre_sector,
-          sector.dano_sector,
-          sector.porcentaje_perdida,
-          sector.total_costo,
+          nombre_sector,
+          dano_sector,
+          porcentaje_perdida,
+          total_costo,
           casoID,
         ]
       );
+
+      const sectorID = sectorResult.insertId;
+
+      // Insertar subsectores si existen
+      if (Array.isArray(subsectores) && subsectores.length > 0) {
+        for (const subsector of subsectores) {
+          const {
+            ID_material,
+            nombre_sub_sector,
+            cantidad_material,
+            tipo_reparacion,
+          } = subsector;
+
+          // Validar campos del subsector
+          if (
+            !ID_material ||
+            !nombre_sub_sector ||
+            !cantidad_material ||
+            !tipo_reparacion
+          ) {
+            throw new Error('Faltan datos en alguno de los subsectores.');
+          }
+
+          await connection.query(
+            `INSERT INTO SubSector (ID_material, nombre_sub_sector, cantidad_material, tipo_reparacion, ID_sector)
+             VALUES (?, ?, ?, ?, ?)`,
+            [
+              ID_material,
+              nombre_sub_sector,
+              cantidad_material,
+              tipo_reparacion,
+              sectorID,
+            ]
+          );
+        }
+      }
     }
+
+    // Confirmar la transacción
+    await connection.commit();
 
     res.status(201).json({ message: 'Caso creado exitosamente', casoID });
   } catch (error) {
+    // Revertir la transacción en caso de error
+    await connection.rollback();
     console.error(error);
-    res.status(500).json({ message: 'Error al crear el caso', error });
+    res.status(500).json({ message: 'Error al crear el caso', error: error.message });
+  } finally {
+    // Liberar la conexión
+    connection.release();
   }
 };
 

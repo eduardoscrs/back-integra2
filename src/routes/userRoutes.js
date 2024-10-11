@@ -3,6 +3,7 @@ import {
   createUser,
   getUsers,
   updateUser,
+  getUserByID
 } from '../controllers/userController.js';
 import { loginUser } from '../controllers/loginController.js';
 
@@ -114,5 +115,7 @@ router.put('/:id', updateUser);
  *         description: Error en el servidor
  */
 router.post('/login', loginUser);
+
+router.get('/:id', getUserByID);
 
 export default router;

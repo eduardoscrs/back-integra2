@@ -72,7 +72,12 @@ export const getUserByID = async (req, res) => {
 
   try {
     const [usuario] = await pool.query(
-      'SELECT * FROM Usuario WHERE ID_usuario = ?',
+      `
+      SELECT Usuario.*, Rol.nombre_rol 
+      FROM Usuario 
+      JOIN Rol ON Usuario.ID_rol = Rol.ID_rol
+      WHERE Usuario.ID_usuario = ?
+    `,
       [id]
     );
 

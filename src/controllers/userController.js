@@ -97,8 +97,7 @@ export const getUserByID = async (req, res) => {
 // Actualizar usuario sin contraseña
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { nombre, apellido, celular, correo, direccion, comuna, ID_rol } =
-    req.body;
+  const { nombre, apellido, celular, correo, direccion, comuna } = req.body; //, ID_rol
 
   // Verificar que los campos requeridos no sean null o undefined
   if (
@@ -107,8 +106,8 @@ export const updateUser = async (req, res) => {
     !celular ||
     !correo ||
     !direccion ||
-    !comuna ||
-    !ID_rol
+    !comuna
+    // || !ID_rol
   ) {
     return res.status(400).json({
       message: 'Faltan datos necesarios para actualizar el usuario.',
@@ -120,7 +119,7 @@ export const updateUser = async (req, res) => {
       `UPDATE Usuario
        SET nombre = ?, apellido = ?, celular = ?, correo = ?, direccion = ?, comuna = ?, ID_rol = ?
        WHERE ID_usuario = ?`,
-      [nombre, apellido, celular, correo, direccion, comuna, ID_rol, id]
+      [nombre, apellido, celular, correo, direccion, comuna, id] // , ID_rol
     );
 
     if (result.affectedRows === 0) {

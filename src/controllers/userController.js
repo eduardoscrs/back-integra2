@@ -97,30 +97,36 @@ export const getUserByID = async (req, res) => {
 // Actualizar usuario sin contraseña
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { nombre, apellido, celular, correo, direccion, comuna } = req.body; //, ID_rol
+  const { nombre, apellido, celular, correo, direccion, comuna } = req.body;
 
   // Verificar que los campos requeridos no sean null o undefined
-  if (
-    !nombre ||
-    !apellido ||
-    !celular ||
-    !correo ||
-    !direccion ||
-    !comuna
-    // || !ID_rol
-  ) {
+  if (!nombre || !apellido || !celular || !correo || !direccion || !comuna) {
     return res.status(400).json({
       message: 'Faltan datos necesarios para actualizar el usuario.',
     });
   }
 
+  // Log para ver qué datos están llegando desde el frontend
+  console.log('Datos recibidos para actualizar el usuario:', {
+    id,
+    nombre,
+    apellido,
+    celular,
+    correo,
+    direccion,
+    comuna,
+  });
+
   try {
     const [result] = await pool.query(
       `UPDATE Usuario
-       SET nombre = ?, apellido = ?, celular = ?, correo = ?, direccion = ?, comuna = ?, ID_rol = ?
+       SET nombre = ?, apellido = ?, celular = ?, correo = ?, direccion = ?, comuna = ?
        WHERE ID_usuario = ?`,
-      [nombre, apellido, celular, correo, direccion, comuna, id] // , ID_rol
+      [nombre, apellido, celular, correo, direccion, comuna, id]
     );
+
+    // Log para verificar el resultado de la consulta
+    console.log('Resultado de la consulta:', result);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado.' });

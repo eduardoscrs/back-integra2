@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createUser,
   getUsers,
+  getUserByID,
   updateUser,
   getUserByID,
   updateUserPassword,
@@ -116,6 +117,8 @@ router.put('/:id', updateUser);
  *         description: Error en el servidor
  */
 router.post('/login', loginUser);
+
+router.get('/:id', getUserByID);
 
 router.get('/:id', getUserByID);
 

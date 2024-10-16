@@ -1,8 +1,8 @@
 import express from 'express';
 import {
   createTrabajo,
-  getTrabajo, 
-  getTrabajoByID, 
+  getTrabajo,
+  getTrabajoByID,
   updateTrabajo,
   deleteTrabajo,
 } from '../controllers/trabajoController.js';

@@ -119,7 +119,6 @@ router.post('/login', loginUser);
 
 router.get('/:id', getUserByID);
 
-router.get('/:id', getUserByID);
-
 router.put('/:id/password', updateUserPassword);
+
 export default router;

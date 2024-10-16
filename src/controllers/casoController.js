@@ -19,7 +19,8 @@ export const createCaso = async (req, res) => {
     !ID_inspector ||
     !ID_contratista ||
     !ID_estado ||
-    !Array.isArray(sectores) || sectores.length === 0
+    !Array.isArray(sectores) ||
+    sectores.length === 0
   ) {
     return res
       .status(400)
@@ -72,13 +73,7 @@ export const createCaso = async (req, res) => {
       const [sectorResult] = await connection.query(
         `INSERT INTO Sector (nombre_sector, dano_sector, porcentaje_perdida, total_costo, ID_caso)
          VALUES (?, ?, ?, ?, ?)`,
-        [
-          nombre_sector,
-          dano_sector,
-          porcentaje_perdida,
-          total_costo,
-          casoID,
-        ]
+        [nombre_sector, dano_sector, porcentaje_perdida, total_costo, casoID]
       );
 
       const sectorID = sectorResult.insertId;
@@ -126,7 +121,9 @@ export const createCaso = async (req, res) => {
     // Revertir la transacción en caso de error
     await connection.rollback();
     console.error(error);
-    res.status(500).json({ message: 'Error al crear el caso', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error al crear el caso', error: error.message });
   } finally {
     // Liberar la conexión
     connection.release();
@@ -139,6 +136,7 @@ export const getCasos = async (req, res) => {
       SELECT Caso.*, Estado_Caso.nombre_estado 
       FROM Caso 
       JOIN Estado_Caso ON Caso.ID_estado = Estado_Caso.ID_estado
+      ORDER BY Caso.ID_caso ASC
     `);
 
     // Utilizar un enfoque secuencial o con un límite de concurrencia

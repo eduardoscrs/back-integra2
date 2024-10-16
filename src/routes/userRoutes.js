@@ -4,7 +4,6 @@ import {
   getUsers,
   getUserByID,
   updateUser,
-  getUserByID,
   updateUserPassword,
 } from '../controllers/userController.js';
 import { loginUser } from '../controllers/loginController.js';
